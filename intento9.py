@@ -140,7 +140,6 @@ def reportar():
             text="Gracias por utilizar el programa",
             bg="lightblue"
         ).pack()
-
 def guardar():
     global contador
 
@@ -155,7 +154,31 @@ def guardar():
 
     tk.Label(
         ventana,
-        text="Reporte guardado con codigo: " + codigo,
+        text="Reporte guardado con código: " + codigo,
+        bg="lightblue"
+    ).pack()
+
+    tk.Label(
+        ventana,
+        text="Nombre: " + nombre_completo.get(),
+        bg="lightblue"
+    ).pack()
+
+    tk.Label(
+        ventana,
+        text="Tipo de bullying: " + obtener_tipo(),
+        bg="lightblue"
+    ).pack()
+
+    tk.Label(
+        ventana,
+        text="Lugar: " + lugar.get(),
+        bg="lightblue"
+    ).pack()
+
+    tk.Label(
+        ventana,
+        text="Descripción: " + descripcion.get(),
         bg="lightblue"
     ).pack()
 
