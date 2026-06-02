@@ -108,39 +108,46 @@ def relacionar():
         )
 
 def reportar():
-    respuesta = reporte.get().lower()
+    global ventana_formulario
+    global nombre_completo
+    global lugar
+    global descripcion
 
-    if respuesta == "si":
+    ventana_formulario = tk.Toplevel()
+    ventana_formulario.title("Registrar Reporte")
+    ventana_formulario.geometry("400x300")
 
-        tk.Label(
-            ventana,
-            text="Nombre completo:",
-            bg="lightblue"
-        ).pack()
+    tk.Label(
+        ventana_formulario,
+        text="Nombre completo:"
+    ).pack()
 
-        global nombre_completo, lugar, descripcion
+    nombre_completo = tk.Entry(ventana_formulario)
+    nombre_completo.pack()
 
-        nombre_completo = tk.Entry(ventana)
-        nombre_completo.pack()
+    tk.Label(
+        ventana_formulario,
+        text="Lugar del incidente:"
+    ).pack()
 
-        tk.Label(
-            ventana,
-            text="Lugar del incidente:",
-            bg="lightblue"
-        ).pack()
+    lugar = tk.Entry(ventana_formulario)
+    lugar.pack()
 
-        lugar = tk.Entry(ventana)
-        lugar.pack()
+    tk.Label(
+        ventana_formulario,
+        text="Descripción:"
+    ).pack()
 
-        tk.Label(
-            ventana,
-            text="Descripción:",
-            bg="lightblue"
-        ).pack()
+    descripcion = tk.Entry(ventana_formulario)
+    descripcion.pack()
 
-        descripcion = tk.Entry(ventana)
-        descripcion.pack()
-
+    tk.Button(
+        ventana_formulario,
+        text="Guardar reporte",
+        command=guardar,
+        bg="blue",
+        fg="white"
+    ).pack(pady=10)
 def guardar():
 
     global contador
