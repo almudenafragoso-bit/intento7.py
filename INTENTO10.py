@@ -203,25 +203,21 @@ def guardar():
         bg="lightgreen"
     ).pack()
 
-    def volver_menu():
-        tipo.delete(0, tk.END)
-        reporte.delete(0, tk.END)
-        nombre_completo.delete(0, tk.END)
-        lugar.delete(0, tk.END)
-        descripcion.delete(0, tk.END)
+   def volver_menu():
 
-        ventana_reporte.destroy()
+    tipo.delete(0, tk.END)
+    reporte.delete(0, tk.END)
 
-    tk.Button(
-        ventana_reporte,
-        text="Volver al menú",
-        command=volver_menu,
-        bg="blue",
-        fg="white"
-    ).pack(pady=10)
+    lbl_nombre.destroy()
+    nombre_completo.destroy()
 
-    contador += 1
+    lbl_lugar.destroy()
+    lugar.destroy()
 
+    lbl_descripcion.destroy()
+    descripcion.destroy()
+
+    ventana_reporte.destroy(
 def buscar_reporte():
 
     codigo = codigo_busqueda.get()
