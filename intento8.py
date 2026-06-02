@@ -153,8 +153,7 @@ def guardar():
 
 tk.Label(
     ventana,
-    text="PREVENCIÓN DEL BULLYING",
-    text="hola soy un asistente que te ayudara a solucionar diferentes tipos de bullying :)",
+    text="PREVENCIÓN DEL BULLYING\n hola soy un asistente que te ayudara a solucionar diferentes tipos de bullying :)",
     font=("Arial", 14, "bold"),
     bg="lightblue"
 ).pack()
