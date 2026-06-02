@@ -153,7 +153,7 @@ def guardar():
 
 tk.Label(
     ventana,
-    text="PREVENCIÓN DEL BULLYING\n hola soy un asistente que te ayudara a solucionar diferentes tipos de bullying :)",
+    text="PREVENCIÓN DEL BULLYING\n hola soy una asistente que atiende diversos tipos de bullying :)",
     font=("Arial", 14, "bold"),
     bg="lightblue"
 ).pack()
@@ -208,9 +208,8 @@ tk.Button(
 tk.Button(
     ventana,
     text="Guardar reporte",
-    text="gracias por confiar en nosotros :)",
     command=guardar,
-    bg="green",
+    bg="blue",
     fg="white"
 ).pack()
 
