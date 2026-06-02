@@ -183,6 +183,20 @@ def guardar():
     ).pack()
 
     contador += 1
+    
+    tk.Button(
+    ventana,
+    text="Volver al menú",
+    command=volver_menu,
+    bg="gray",
+    fg="white"
+).pack()
+def volver_menu():
+    nombre_completo.delete(0, tk.END)
+    lugar.delete(0, tk.END)
+    descripcion.delete(0, tk.END)
+    reporte.delete(0, tk.END)
+    tipo.delete(0, tk.END)
 
 def buscar_reporte():
 
