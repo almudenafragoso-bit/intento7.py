@@ -211,7 +211,7 @@ tk.Button(
     text="Guardar reporte",
     text="gracias por confiar en nosotros :)",
     command=guardar,
-    bg="pink",
+    bg="green",
     fg="white"
 ).pack()
 
