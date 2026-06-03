@@ -18,7 +18,7 @@ if not os.path.exists(archivo):
             ["codigo", "nombre", "tipo", "lugar", "descripcion"]
         )
 
-contador = contador+1
+contador =1
 formulario_creado = False
 
 # ---------------- FUNCIONES ----------------
@@ -168,7 +168,7 @@ def guardar():
     if not formulario_creado:
         return
 
-    codigo = "R" + str(contador)
+    codigo = "R" + str(contador+1)
 
     with open(archivo, "a", newline="", encoding="utf-8") as f:
 
