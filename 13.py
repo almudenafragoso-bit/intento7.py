@@ -293,8 +293,8 @@ def guardar():
 
         global formulario_creado
 
-        tipo.delete(0, tk.END)
-        reporte.delete(0, tk.END)
+        tipo.delete(0, "end")
+        reporte.delete(0, "end")
 
         lbl_nombre.destroy()
         nombre_completo.destroy()
