@@ -1,6 +1,7 @@
 [9:44 a.m., 2/6/2026] Almudena Leonor Fragoso: ).pack()
 [9:53 a.m., 2/6/2026] Almudena Leonor Fragoso: import tkinter as tk
-
+import csv
+import os
 ventana = tk.Tk()
 ventana.title("Prevención del Bullying")
 ventana.geometry("700x700")
@@ -8,7 +9,14 @@ ventana.configure(bg="lightblue")
 
 reportes = {}
 contador = 1
+archivo = "reportes.csv"
 
+if not os.path.exists(archivo):
+    with open(archivo, "w", newline="", encoding="utf-8") as f:
+        escritor = csv.writer(f)
+        escritor.writerow(
+            ["codigo", "nombre", "tipo", "lugar", "descripcion"]
+        )
 def salir():
     ventana.destroy()
 
@@ -154,7 +162,16 @@ def guardar():
         "lugar": lugar.get(),
         "descripcion": descripcion.get()
     }
+with open(archivo, "a", newline="", encoding="utf-8") as f:
+    escritor = csv.writer(f)
 
+    escritor.writerow([
+        codigo,
+        nombre_completo.get(),
+        obtener_tipo(),
+        lugar.get(),
+        descripcion.get()
+    ])
     ventana_reporte = tk.Toplevel()
     ventana_reporte.title("Reporte Guardado")
     ventana_reporte.geometry("450x300")
@@ -220,38 +237,42 @@ def buscar_reporte():
 
     codigo = codigo_busqueda.get()
 
-    if codigo in reportes:
+    encontrado = False
 
-        datos = reportes[codigo]
+    with open(
+        archivo,
+        "r",
+        encoding="utf-8"
+    ) as f:
 
-        v = tk.Toplevel()
-        v.title("Reporte Encontrado")
-        v.geometry("400x250")
-        v.configure(bg="lightyellow")
+        lector = csv.reader(f)
 
-        tk.Label(v, text="Código: " + codigo,
-                 bg="lightyellow").pack()
+        next(lector)
 
-        tk.Label(v, text="Nombre: " + datos["nombre"],
-                 bg="lightyellow").pack()
+        for fila in lector:
 
-        tk.Label(v, text="Tipo: " + datos["tipo"],
-                 bg="lightyellow").pack()
+            if fila[0] == codigo:
 
-        tk.Label(v, text="Lugar: " + datos["lugar"],
-                 bg="lightyellow").pack()
+                encontrado = True
 
-        tk.Label(v, text="Descripción: " + datos["descripcion"],
-                 bg="lightyellow").pack()
+                v = tk.Toplevel()
+                v.title("Reporte Encontrado")
 
-    else:
+                tk.Label(v, text="Código: " + fila[0]).pack()
+                tk.Label(v, text="Nombre: " + fila[1]).pack()
+                tk.Label(v, text="Tipo: " + fila[2]).pack()
+                tk.Label(v, text="Lugar: " + fila[3]).pack()
+                tk.Label(v, text="Descripción: " + fila[4]).pack()
+
+                break
+
+    if not encontrado:
 
         tk.Label(
             ventana,
             text="Reporte no encontrado",
             bg="lightblue"
         ).pack()
-
 # TÍTULO
 
 tk.Label(
