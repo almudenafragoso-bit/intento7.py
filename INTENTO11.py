@@ -18,7 +18,7 @@ if not os.path.exists(archivo):
             ["codigo", "nombre", "tipo", "lugar", "descripcion"]
         )
 
-contador = 1
+contador = contador+1
 formulario_creado = False
 
 # ---------------- FUNCIONES ----------------
