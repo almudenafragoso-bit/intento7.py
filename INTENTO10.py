@@ -7,7 +7,7 @@ ventana.configure(bg="lightblue")
 
 reportes = {}
 contador = 1
-
+formulario_creado = False
 def salir():
     ventana.destroy()
 
@@ -108,46 +108,50 @@ def relacionar():
         )
 
 def reportar():
-    global ventana_formulario
-    global nombre_completo
-    global lugar
-    global descripcion
 
-    ventana_formulario = tk.Toplevel()
-    ventana_formulario.title("Registrar Reporte")
-    ventana_formulario.geometry("400x300")
+    global formulario_creado
+    global lbl_nombre, nombre_completo
+    global lbl_lugar, lugar
+    global lbl_descripcion, descripcion
 
-    tk.Label(
-        ventana_formulario,
-        text="Nombre completo:"
-    ).pack()
+    if formulario_creado:
+        return
 
-    nombre_completo = tk.Entry(ventana_formulario)
-    nombre_completo.pack()
+    respuesta = reporte.get().lower()
 
-    tk.Label(
-        ventana_formulario,
-        text="Lugar del incidente:"
-    ).pack()
+    if respuesta == "si":
 
-    lugar = tk.Entry(ventana_formulario)
-    lugar.pack()
+        lbl_nombre = tk.Label(
+            ventana,
+            text="Nombre completo:",
+            bg="lightblue"
+        )
+        lbl_nombre.pack()
 
-    tk.Label(
-        ventana_formulario,
-        text="Descripción:"
-    ).pack()
+        nombre_completo = tk.Entry(ventana)
+        nombre_completo.pack()
 
-    descripcion = tk.Entry(ventana_formulario)
-    descripcion.pack()
+        lbl_lugar = tk.Label(
+            ventana,
+            text="Lugar del incidente:",
+            bg="lightblue"
+        )
+        lbl_lugar.pack()
 
-    tk.Button(
-        ventana_formulario,
-        text="Guardar reporte",
-        command=guardar,
-        bg="blue",
-        fg="white"
-    ).pack(pady=10)
+        lugar = tk.Entry(ventana)
+        lugar.pack()
+
+        lbl_descripcion = tk.Label(
+            ventana,
+            text="Descripción:",
+            bg="lightblue"
+        )
+        lbl_descripcion.pack()
+
+        descripcion = tk.Entry(ventana)
+        descripcion.pack()
+
+        formulario_creado = True
 def guardar():
 
     global contador
@@ -203,7 +207,9 @@ def guardar():
         bg="lightgreen"
     ).pack()
 
-   def volver_menu():
+  def volver_menu():
+
+    global formulario_creado
 
     tipo.delete(0, tk.END)
     reporte.delete(0, tk.END)
@@ -217,7 +223,9 @@ def guardar():
     lbl_descripcion.destroy()
     descripcion.destroy()
 
-    ventana_reporte.destroy(
+    formulario_creado = False
+
+    ventana_reporte.destroy()
 def buscar_reporte():
 
     codigo = codigo_busqueda.get()
@@ -309,7 +317,13 @@ tk.Button(
     command=reportar,
     bg="orange"
 ).pack(pady=5)
-
+ tk.Button(
+        ventana_formulario,
+        text="Guardar reporte",
+        command=guardar,
+        bg="blue",
+        fg="white"
+    ).pack(pady=5)
 tk.Label(
     ventana,
     text="Buscar reporte por código:",
