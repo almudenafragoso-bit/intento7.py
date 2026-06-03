@@ -258,7 +258,7 @@ def buscar_reporte():
 
 tk.Label(
     ventana,
-    text="PREVENCIÓN DEL BULLYING",
+    text="PREVENCIÓN DEL BULLYING\n Soy un asistente que te dara recomendaciones en caso de acoso o bullying:)",
     font=("Arial", 16, "bold"),
     bg="lightblue"
 ).pack(pady=10)
@@ -308,14 +308,6 @@ tk.Button(
     text="Hacer reporte",
     command=reportar,
     bg="orange"
-).pack(pady=5)
-
-tk.Button(
-    ventana,
-    text="Guardar reporte",
-    command=guardar,
-    bg="blue",
-    fg="white"
 ).pack(pady=5)
 
 tk.Label(
