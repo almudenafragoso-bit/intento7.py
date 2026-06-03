@@ -76,16 +76,10 @@ def recomendaciones_agresor():
         bg="#FF69B4",
         fg="white"
     ).pack(pady=10)
-    text="Mostrar recomendaciones"
-    tk.Button(
-    ventana,
-    text="Soy quien comete bullying",
-    command=recomendaciones_agresor,
-    bg="#DB7093",
-    fg="white"
-).pack(pady=5)
+
 def salir():
     ventana.destroy()
+
 def obtener_tipo():
     tipos = {
         "1": "Físico",
@@ -385,8 +379,8 @@ def buscar_reporte():
 
 tk.Label(
     ventana,
-    text="🩷 SISTEMA DE PREVENCIÓN DEL BULLYING 🩷"
-    font=("Comic Sans MS", 18, "bold")
+    text="🩷 SISTEMA DE PREVENCIÓN DEL BULLYING 🩷",
+    font=("Comic Sans MS", 18, "bold"),
     bg="#FFC0CB"
 ).pack(pady=10)
 
@@ -410,6 +404,14 @@ tk.Button(
     text="Mostrar recomendaciones",
     command=relacionar,
     bg="#FF69B4",
+    fg="white"
+).pack(pady=5)
+
+tk.Button(
+    ventana,
+    text="Soy quien comete bullying",
+    command=recomendaciones_agresor,
+    bg="#DB7093",
     fg="white"
 ).pack(pady=5)
 
