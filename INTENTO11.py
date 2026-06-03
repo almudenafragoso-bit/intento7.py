@@ -168,7 +168,7 @@ def guardar():
     if not formulario_creado:
         return
 
-    codigo = "R" + str(contador+1)
+    codigo = "R" + str(contador)
 
     with open(archivo, "a", newline="", encoding="utf-8") as f:
 
