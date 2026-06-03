@@ -163,7 +163,7 @@ def reportar():
 
 def guardar():
 
-    global contador
+    global contador+1
 
     if not formulario_creado:
         return
