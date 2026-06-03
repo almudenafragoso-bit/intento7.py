@@ -41,8 +41,6 @@ formulario_creado = False
 
 # ---------------- FUNCIONES ----------------
 
-def salir():
-    ventana.destroy()
 def recomendaciones_agresor():
 
     v = tk.Toplevel()
@@ -86,6 +84,8 @@ def recomendaciones_agresor():
     bg="#DB7093",
     fg="white"
 ).pack(pady=5)
+def salir():
+    ventana.destroy()
 def obtener_tipo():
     tipos = {
         "1": "Físico",
