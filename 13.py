@@ -1,7 +1,6 @@
 import customtkinter as ctk
 import csv
 import os
-from PIL import Image, ImageDraw
 
 # Configurar tema
 ctk.set_appearance_mode("light")
@@ -43,6 +42,15 @@ def obtener_siguiente_codigo():
 
 contador = obtener_siguiente_codigo()
 formulario_creado = False
+
+# Variables globales para los widgets
+lbl_nombre = None
+nombre_completo = None
+lbl_lugar = None
+lugar = None
+lbl_descripcion = None
+descripcion = None
+lbl_error = None
 
 # ---------------- FUNCIONES ----------------
 
@@ -114,8 +122,8 @@ def mostrar_recomendaciones(titulo, r1, r2):
         text_color="#000000"
     ).pack(pady=10)
 
-    ctk.CTkLabel(v, text=r1, text_color="#000000").pack()
-    ctk.CTkLabel(v, text=r2, text_color="#000000").pack()
+    ctk.CTkLabel(v, text=r1, text_color="#000000", wraplength=350).pack(pady=5)
+    ctk.CTkLabel(v, text=r2, text_color="#000000", wraplength=350).pack(pady=5)
 
     ctk.CTkButton(
         v,
@@ -129,7 +137,12 @@ def mostrar_recomendaciones(titulo, r1, r2):
 
 def relacionar():
 
-    opcion = tipo.get()
+    opcion = tipo.get().strip()
+
+    # Validar que sea una opción válida
+    if opcion not in ["1", "2", "3", "4", "5", "6", "7"]:
+        mostrar_error("Selecciona una opción válida (1-7)")
+        return
 
     if opcion == "1":
         mostrar_recomendaciones(
@@ -180,6 +193,20 @@ def relacionar():
             "2. Busca apoyo en tu escuela."
         )
 
+def mostrar_error(mensaje):
+    global lbl_error
+    
+    if lbl_error is not None:
+        lbl_error.destroy()
+    
+    lbl_error = ctk.CTkLabel(
+        ventana,
+        text=mensaje,
+        text_color="red",
+        font=("Arial", 10, "bold")
+    )
+    lbl_error.pack()
+
 def reportar():
 
     global formulario_creado
@@ -190,45 +217,71 @@ def reportar():
     if formulario_creado:
         return
 
-    if reporte.get().lower() == "si":
+    respuesta = reporte.get().strip().lower()
+    
+    if respuesta != "si":
+        mostrar_error("Escribe 'si' para hacer un reporte")
+        return
 
-        lbl_nombre = ctk.CTkLabel(
-            ventana,
-            text="Nombre completo:",
-            text_color="#000000"
-        )
-        lbl_nombre.pack()
+    lbl_nombre = ctk.CTkLabel(
+        ventana,
+        text="Nombre completo:",
+        text_color="#000000"
+    )
+    lbl_nombre.pack()
 
-        nombre_completo = ctk.CTkEntry(ventana, corner_radius=10)
-        nombre_completo.pack(pady=5)
+    nombre_completo = ctk.CTkEntry(ventana, corner_radius=10)
+    nombre_completo.pack(pady=5)
 
-        lbl_lugar = ctk.CTkLabel(
-            ventana,
-            text="Lugar del incidente:",
-            text_color="#000000"
-        )
-        lbl_lugar.pack()
+    lbl_lugar = ctk.CTkLabel(
+        ventana,
+        text="Lugar del incidente:",
+        text_color="#000000"
+    )
+    lbl_lugar.pack()
 
-        lugar = ctk.CTkEntry(ventana, corner_radius=10)
-        lugar.pack(pady=5)
+    lugar = ctk.CTkEntry(ventana, corner_radius=10)
+    lugar.pack(pady=5)
 
-        lbl_descripcion = ctk.CTkLabel(
-            ventana,
-            text="Descripción:",
-            text_color="#000000"
-        )
-        lbl_descripcion.pack()
+    lbl_descripcion = ctk.CTkLabel(
+        ventana,
+        text="Descripción:",
+        text_color="#000000"
+    )
+    lbl_descripcion.pack()
 
-        descripcion = ctk.CTkEntry(ventana, corner_radius=10)
-        descripcion.pack(pady=5)
+    descripcion = ctk.CTkEntry(ventana, corner_radius=10)
+    descripcion.pack(pady=5)
 
-        formulario_creado = True
+    formulario_creado = True
 
 def guardar():
 
     global contador
+    global formulario_creado
+    global lbl_nombre, nombre_completo
+    global lbl_lugar, lugar
+    global lbl_descripcion, descripcion
 
     if not formulario_creado:
+        mostrar_error("Primero debes hacer un reporte")
+        return
+
+    # Validaciones
+    if not nombre_completo.get().strip():
+        mostrar_error("El nombre es requerido")
+        return
+    
+    if not lugar.get().strip():
+        mostrar_error("El lugar es requerido")
+        return
+    
+    if not descripcion.get().strip():
+        mostrar_error("La descripción es requerida")
+        return
+
+    if tipo.get().strip() not in ["1", "2", "3", "4", "5", "6", "7"]:
+        mostrar_error("Selecciona un tipo de bullying válido")
         return
 
     codigo = "R" + str(contador)
@@ -292,18 +345,32 @@ def guardar():
     def volver_menu():
 
         global formulario_creado
+        global lbl_nombre, nombre_completo
+        global lbl_lugar, lugar
+        global lbl_descripcion, descripcion
+        global lbl_error
 
         tipo.delete(0, "end")
         reporte.delete(0, "end")
 
-        lbl_nombre.destroy()
-        nombre_completo.destroy()
+        # Verificar si existen antes de destruir
+        if lbl_nombre is not None and lbl_nombre.winfo_exists():
+            lbl_nombre.destroy()
+        if nombre_completo is not None and nombre_completo.winfo_exists():
+            nombre_completo.destroy()
 
-        lbl_lugar.destroy()
-        lugar.destroy()
+        if lbl_lugar is not None and lbl_lugar.winfo_exists():
+            lbl_lugar.destroy()
+        if lugar is not None and lugar.winfo_exists():
+            lugar.destroy()
 
-        lbl_descripcion.destroy()
-        descripcion.destroy()
+        if lbl_descripcion is not None and lbl_descripcion.winfo_exists():
+            lbl_descripcion.destroy()
+        if descripcion is not None and descripcion.winfo_exists():
+            descripcion.destroy()
+
+        if lbl_error is not None and lbl_error.winfo_exists():
+            lbl_error.destroy()
 
         formulario_creado = False
 
@@ -321,70 +388,75 @@ def guardar():
 
 def buscar_reporte():
 
-    codigo = codigo_busqueda.get()
+    codigo = codigo_busqueda.get().strip()
+
+    if not codigo:
+        mostrar_error("Ingresa un código para buscar")
+        return
 
     encontrado = False
 
-    with open(
-        archivo,
-        "r",
-        encoding="utf-8"
-    ) as f:
+    try:
+        with open(
+            archivo,
+            "r",
+            encoding="utf-8"
+        ) as f:
 
-        lector = csv.reader(f)
+            lector = csv.reader(f)
 
-        next(lector)
+            next(lector)
 
-        for fila in lector:
+            for fila in lector:
 
-            if fila[0] == codigo:
+                if fila[0] == codigo:
 
-                encontrado = True
+                    encontrado = True
 
-                v = ctk.CTkToplevel()
-                v.title("Reporte Encontrado")
-                v.geometry("450x250")
-                v.configure(fg_color="#F5F0E8")
+                    v = ctk.CTkToplevel()
+                    v.title("Reporte Encontrado")
+                    v.geometry("450x250")
+                    v.configure(fg_color="#F5F0E8")
 
-                ctk.CTkLabel(
-                    v,
-                    text="Código: " + fila[0],
-                    text_color="#000000"
-                ).pack()
+                    ctk.CTkLabel(
+                        v,
+                        text="Código: " + fila[0],
+                        text_color="#000000"
+                    ).pack()
 
-                ctk.CTkLabel(
-                    v,
-                    text="Nombre: " + fila[1],
-                    text_color="#000000"
-                ).pack()
+                    ctk.CTkLabel(
+                        v,
+                        text="Nombre: " + fila[1],
+                        text_color="#000000"
+                    ).pack()
 
-                ctk.CTkLabel(
-                    v,
-                    text="Tipo: " + fila[2],
-                    text_color="#000000"
-                ).pack()
+                    ctk.CTkLabel(
+                        v,
+                        text="Tipo: " + fila[2],
+                        text_color="#000000"
+                    ).pack()
 
-                ctk.CTkLabel(
-                    v,
-                    text="Lugar: " + fila[3],
-                    text_color="#000000"
-                ).pack()
+                    ctk.CTkLabel(
+                        v,
+                        text="Lugar: " + fila[3],
+                        text_color="#000000"
+                    ).pack()
 
-                ctk.CTkLabel(
-                    v,
-                    text="Descripción: " + fila[4],
-                    text_color="#000000"
-                ).pack()
+                    ctk.CTkLabel(
+                        v,
+                        text="Descripción: " + fila[4],
+                        text_color="#000000",
+                        wraplength=400
+                    ).pack()
 
-                break
+                    break
+
+    except FileNotFoundError:
+        mostrar_error("Error: El archivo de reportes no existe")
+        return
 
     if not encontrado:
-
-        ctk.CTkLabel(
-            ventana,
-            text="Reporte no encontrado",
-            text_color="#000000"
-        ).pack()
+        mostrar_error("Reporte no encontrado")
 
 # ---------------- INTERFAZ ----------------
 
