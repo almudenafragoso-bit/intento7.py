@@ -2,7 +2,6 @@ import tkinter as tk
 import csv
 import os
 
-# ---------------- VENTANA PRINCIPAL ----------------
 
 ventana = tk.Tk()
 ventana.title("Prevención del Bullying")
