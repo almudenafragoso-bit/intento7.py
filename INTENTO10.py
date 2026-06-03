@@ -1,14 +1,14 @@
-[9:44 a.m., 2/6/2026] Almudena Leonor Fragoso: ).pack()
-[9:53 a.m., 2/6/2026] Almudena Leonor Fragoso: import tkinter as tk
+import tkinter as tk
 import csv
 import os
+
+# ---------------- VENTANA PRINCIPAL ----------------
+
 ventana = tk.Tk()
 ventana.title("Prevención del Bullying")
 ventana.geometry("700x700")
-ventana.configure(bg="lightblue")
+ventana.configure(bg="#FFC0CB")
 
-reportes = {}
-contador = 1
 archivo = "reportes.csv"
 
 if not os.path.exists(archivo):
@@ -17,68 +17,69 @@ if not os.path.exists(archivo):
         escritor.writerow(
             ["codigo", "nombre", "tipo", "lugar", "descripcion"]
         )
+
+contador = 1
+formulario_creado = False
+
+# ---------------- FUNCIONES ----------------
+
 def salir():
     ventana.destroy()
 
 def obtener_tipo():
-    opcion = tipo.get()
+    tipos = {
+        "1": "Físico",
+        "2": "Verbal",
+        "3": "Psicológico",
+        "4": "Social",
+        "5": "Ciberbullying",
+        "6": "Sexual",
+        "7": "Otros"
+    }
 
-    if opcion == "1":
-        return "Físico"
-    elif opcion == "2":
-        return "Verbal"
-    elif opcion == "3":
-        return "Psicológico"
-    elif opcion == "4":
-        return "Social"
-    elif opcion == "5":
-        return "Ciberbullying"
-    elif opcion == "6":
-        return "Sexual"
-    elif opcion == "7":
-        return "Otros"
-    else:
-        return "No especificado"
+    return tipos.get(tipo.get(), "No especificado")
 
-def mostrar_recomendaciones(titulo, rec1, rec2):
+def mostrar_recomendaciones(titulo, r1, r2):
+
     v = tk.Toplevel()
     v.title(titulo)
     v.geometry("400x200")
-    v.configure(bg="lightyellow")
+    v.configure(bg="#FFE4E1")
 
     tk.Label(
         v,
         text=titulo,
         font=("Arial", 12, "bold"),
-        bg="lightyellow"
+        bg="#FFE4E1"
     ).pack(pady=10)
 
-    tk.Label(v, text=rec1, bg="lightyellow").pack()
-    tk.Label(v, text=rec2, bg="lightyellow").pack()
+    tk.Label(v, text=r1, bg="#FFE4E1").pack()
+    tk.Label(v, text=r2, bg="#FFE4E1").pack()
 
     tk.Button(
         v,
         text="Cerrar",
         command=v.destroy,
-        bg="gray",
+        bg="#FF69B4",
         fg="white"
     ).pack(pady=10)
 
 def relacionar():
+
     opcion = tipo.get()
 
     if opcion == "1":
         mostrar_recomendaciones(
             "Bullying Físico",
             "1. Reporta las agresiones a un adulto.",
-            "2. Guarda evidencias si es posible."
+            "2. Guarda evidencias."
         )
 
     elif opcion == "2":
         mostrar_recomendaciones(
             "Bullying Verbal",
             "1. No respondas con insultos.",
-            "2. Habla con una persona de confianza."
+            "2. Habla con alguien de confianza."
         )
 
     elif opcion == "3":
@@ -113,113 +114,135 @@ def relacionar():
         mostrar_recomendaciones(
             "Otros",
             "1. Habla con alguien de confianza.",
-            "2. Busca apoyo en tu escuela o familia."
+            "2. Busca apoyo en tu escuela."
         )
 
 def reportar():
-    respuesta = reporte.get().lower()
 
-    if respuesta == "si":
+    global formulario_creado
+    global lbl_nombre, nombre_completo
+    global lbl_lugar, lugar
+    global lbl_descripcion, descripcion
 
-        tk.Label(
+    if formulario_creado:
+        return
+
+    if reporte.get().lower() == "si":
+
+        lbl_nombre = tk.Label(
             ventana,
             text="Nombre completo:",
-            bg="lightblue"
-        ).pack()
-
-        global nombre_completo, lugar, descripcion
+            bg="#FFC0CB"
+        )
+        lbl_nombre.pack()
 
         nombre_completo = tk.Entry(ventana)
         nombre_completo.pack()
 
-        tk.Label(
+        lbl_lugar = tk.Label(
             ventana,
             text="Lugar del incidente:",
-            bg="lightblue"
-        ).pack()
+            bg="#FFC0CB"
+        )
+        lbl_lugar.pack()
 
         lugar = tk.Entry(ventana)
         lugar.pack()
 
-        tk.Label(
+        lbl_descripcion = tk.Label(
             ventana,
             text="Descripción:",
-            bg="lightblue"
-        ).pack()
+            bg="#FFC0CB"
+        )
+        lbl_descripcion.pack()
 
         descripcion = tk.Entry(ventana)
         descripcion.pack()
+
+        formulario_creado = True
 
 def guardar():
 
     global contador
 
+    if not formulario_creado:
+        return
+
     codigo = "R" + str(contador)
 
-    reportes[codigo] = {
-        "nombre": nombre_completo.get(),
-        "tipo": obtener_tipo(),
-        "lugar": lugar.get(),
-        "descripcion": descripcion.get()
-    }
-with open(archivo, "a", newline="", encoding="utf-8") as f:
-    escritor = csv.writer(f)
+    with open(archivo, "a", newline="", encoding="utf-8") as f:
 
-    escritor.writerow([
-        codigo,
-        nombre_completo.get(),
-        obtener_tipo(),
-        lugar.get(),
-        descripcion.get()
-    ])
+        escritor = csv.writer(f)
+
+        escritor.writerow([
+            codigo,
+            nombre_completo.get(),
+            obtener_tipo(),
+            lugar.get(),
+            descripcion.get()
+        ])
+
+    contador += 1
+
     ventana_reporte = tk.Toplevel()
     ventana_reporte.title("Reporte Guardado")
-    ventana_reporte.geometry("450x300")
-    ventana_reporte.configure(bg="lightgreen")
+    ventana_reporte.geometry("450x320")
+    ventana_reporte.configure(bg="#FFB6C1")
 
     tk.Label(
         ventana_reporte,
         text="Reporte guardado correctamente",
-        bg="lightgreen",
-        font=("Arial", 12, "bold")
+        font=("Arial", 12, "bold"),
+        bg="#FFB6C1"
     ).pack(pady=10)
 
     tk.Label(
         ventana_reporte,
         text="Código: " + codigo,
-        bg="lightgreen"
+        bg="#FFB6C1"
     ).pack()
 
     tk.Label(
         ventana_reporte,
         text="Nombre: " + nombre_completo.get(),
-        bg="lightgreen"
+        bg="#FFB6C1"
     ).pack()
 
     tk.Label(
         ventana_reporte,
         text="Tipo: " + obtener_tipo(),
-        bg="lightgreen"
+        bg="#FFB6C1"
     ).pack()
 
     tk.Label(
         ventana_reporte,
         text="Lugar: " + lugar.get(),
-        bg="lightgreen"
+        bg="#FFB6C1"
     ).pack()
 
     tk.Label(
         ventana_reporte,
         text="Descripción: " + descripcion.get(),
-        bg="lightgreen"
+        bg="#FFB6C1"
     ).pack()
 
     def volver_menu():
+
+        global formulario_creado
+
         tipo.delete(0, tk.END)
         reporte.delete(0, tk.END)
-        nombre_completo.delete(0, tk.END)
-        lugar.delete(0, tk.END)
-        descripcion.delete(0, tk.END)
+
+        lbl_nombre.destroy()
+        nombre_completo.destroy()
+
+        lbl_lugar.destroy()
+        lugar.destroy()
+
+        lbl_descripcion.destroy()
+        descripcion.destroy()
+
+        formulario_creado = False
 
         ventana_reporte.destroy()
 
@@ -227,11 +250,9 @@ with open(archivo, "a", newline="", encoding="utf-8") as f:
         ventana_reporte,
         text="Volver al menú",
         command=volver_menu,
-        bg="blue",
+        bg="#FF69B4",
         fg="white"
-    ).pack(pady=10)
-
-    contador += 1
+    ).pack(pady=15)
 
 def buscar_reporte():
 
@@ -257,12 +278,38 @@ def buscar_reporte():
 
                 v = tk.Toplevel()
                 v.title("Reporte Encontrado")
+                v.geometry("450x250")
+                v.configure(bg="#FFE4E1")
 
-                tk.Label(v, text="Código: " + fila[0]).pack()
-                tk.Label(v, text="Nombre: " + fila[1]).pack()
-                tk.Label(v, text="Tipo: " + fila[2]).pack()
-                tk.Label(v, text="Lugar: " + fila[3]).pack()
-                tk.Label(v, text="Descripción: " + fila[4]).pack()
+                tk.Label(
+                    v,
+                    text="Código: " + fila[0],
+                    bg="#FFE4E1"
+                ).pack()
+
+                tk.Label(
+                    v,
+                    text="Nombre: " + fila[1],
+                    bg="#FFE4E1"
+                ).pack()
+
+                tk.Label(
+                    v,
+                    text="Tipo: " + fila[2],
+                    bg="#FFE4E1"
+                ).pack()
+
+                tk.Label(
+                    v,
+                    text="Lugar: " + fila[3],
+                    bg="#FFE4E1"
+                ).pack()
+
+                tk.Label(
+                    v,
+                    text="Descripción: " + fila[4],
+                    bg="#FFE4E1"
+                ).pack()
 
                 break
 
@@ -271,35 +318,28 @@ def buscar_reporte():
         tk.Label(
             ventana,
             text="Reporte no encontrado",
-            bg="lightblue"
+            bg="#FFC0CB"
         ).pack()
-# TÍTULO
+
+# ---------------- INTERFAZ ----------------
 
 tk.Label(
     ventana,
     text="PREVENCIÓN DEL BULLYING",
-    font=("Arial", 16, "bold"),
-    bg="lightblue"
+    font=("Arial", 18, "bold"),
+    bg="#FFC0CB"
 ).pack(pady=10)
 
 tk.Label(
     ventana,
-    text="Tipos de bullying",
-    bg="lightblue"
+    text="1. Físico\n2. Verbal\n3. Psicológico\n4. Social\n5. Ciberbullying\n6. Sexual\n7. Otros",
+    bg="#FFC0CB"
 ).pack()
-
-tk.Label(ventana, text="1. Físico", bg="lightblue").pack()
-tk.Label(ventana, text="2. Verbal", bg="lightblue").pack()
-tk.Label(ventana, text="3. Psicológico", bg="lightblue").pack()
-tk.Label(ventana, text="4. Social", bg="lightblue").pack()
-tk.Label(ventana, text="5. Ciberbullying", bg="lightblue").pack()
-tk.Label(ventana, text="6. Sexual", bg="lightblue").pack()
-tk.Label(ventana, text="7. Otros", bg="lightblue").pack()
 
 tk.Label(
     ventana,
     text="Selecciona el tipo de bullying:",
-    bg="lightblue"
+    bg="#FFC0CB"
 ).pack()
 
 tipo = tk.Entry(ventana)
@@ -309,14 +349,14 @@ tk.Button(
     ventana,
     text="Mostrar recomendaciones",
     command=relacionar,
-    bg="green",
+    bg="#FF69B4",
     fg="white"
 ).pack(pady=5)
 
 tk.Label(
     ventana,
     text="¿Deseas hacer un reporte? (si/no)",
-    bg="lightblue"
+    bg="#FFC0CB"
 ).pack()
 
 reporte = tk.Entry(ventana)
@@ -326,21 +366,22 @@ tk.Button(
     ventana,
     text="Hacer reporte",
     command=reportar,
-    bg="orange"
+    bg="#FF69B4",
+    fg="white"
 ).pack(pady=5)
 
 tk.Button(
     ventana,
     text="Guardar reporte",
     command=guardar,
-    bg="blue",
+    bg="#DB7093",
     fg="white"
 ).pack(pady=5)
 
 tk.Label(
     ventana,
     text="Buscar reporte por código:",
-    bg="lightblue"
+    bg="#FFC0CB"
 ).pack()
 
 codigo_busqueda = tk.Entry(ventana)
@@ -350,7 +391,7 @@ tk.Button(
     ventana,
     text="Buscar",
     command=buscar_reporte,
-    bg="purple",
+    bg="#C71585",
     fg="white"
 ).pack(pady=5)
 
