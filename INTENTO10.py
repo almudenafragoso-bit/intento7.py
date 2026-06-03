@@ -1,5 +1,6 @@
 import tkinter as tk
 
+
 ventana = tk.Tk()
 ventana.title("Prevención del Bullying")
 ventana.geometry("700x700")
@@ -7,28 +8,23 @@ ventana.configure(bg="lightblue")
 
 reportes = {}
 contador = 1
+formulario_creado = False
+
+
 def salir():
     ventana.destroy()
 
 def obtener_tipo():
-    opcion = tipo.get()
-
-    if opcion == "1":
-        return "Físico"
-    elif opcion == "2":
-        return "Verbal"
-    elif opcion == "3":
-        return "Psicológico"
-    elif opcion == "4":
-        return "Social"
-    elif opcion == "5":
-        return "Ciberbullying"
-    elif opcion == "6":
-        return "Sexual"
-    elif opcion == "7":
-        return "Otros"
-    else:
-        return "No especificado"
+    tipos = {
+        "1": "Físico",
+        "2": "Verbal",
+        "3": "Psicológico",
+        "4": "Social",
+        "5": "Ciberbullying",
+        "6": "Sexual",
+        "7": "Otros"
+    }
+    return tipos.get(tipo.get(), "No especificado")
 
 def mostrar_recomendaciones(titulo, rec1, rec2):
     v = tk.Toplevel()
@@ -61,14 +57,14 @@ def relacionar():
         mostrar_recomendaciones(
             "Bullying Físico",
             "1. Reporta las agresiones a un adulto.",
-            "2. Guarda evidencias si es posible."
+            "2. Guarda evidencias."
         )
 
     elif opcion == "2":
         mostrar_recomendaciones(
             "Bullying Verbal",
             "1. No respondas con insultos.",
-            "2. Habla con una persona de confianza."
+            "2. Habla con alguien de confianza."
         )
 
     elif opcion == "3":
@@ -103,7 +99,7 @@ def relacionar():
         mostrar_recomendaciones(
             "Otros",
             "1. Habla con alguien de confianza.",
-            "2. Busca apoyo en tu escuela o familia."
+            "2. Busca apoyo en tu escuela."
         )
 
 def reportar():
@@ -116,9 +112,7 @@ def reportar():
     if formulario_creado:
         return
 
-    respuesta = reporte.get().lower()
-
-    if respuesta == "si":
+    if reporte.get().lower() == "si":
 
         lbl_nombre = tk.Label(
             ventana,
@@ -151,9 +145,13 @@ def reportar():
         descripcion.pack()
 
         formulario_creado = True
+
 def guardar():
 
     global contador
+
+    if not formulario_creado:
+        return
 
     codigo = "R" + str(contador)
 
@@ -163,6 +161,8 @@ def guardar():
         "lugar": lugar.get(),
         "descripcion": descripcion.get()
     }
+
+    contador += 1
 
     ventana_reporte = tk.Toplevel()
     ventana_reporte.title("Reporte Guardado")
@@ -206,25 +206,34 @@ def guardar():
         bg="lightgreen"
     ).pack()
 
-  def volver_menu():
+    def volver_menu():
 
-    global formulario_creado
+        global formulario_creado
 
-    tipo.delete(0, tk.END)
-    reporte.delete(0, tk.END)
+        tipo.delete(0, tk.END)
+        reporte.delete(0, tk.END)
 
-    lbl_nombre.destroy()
-    nombre_completo.destroy()
+        lbl_nombre.destroy()
+        nombre_completo.destroy()
 
-    lbl_lugar.destroy()
-    lugar.destroy()
+        lbl_lugar.destroy()
+        lugar.destroy()
 
-    lbl_descripcion.destroy()
-    descripcion.destroy()
+        lbl_descripcion.destroy()
+        descripcion.destroy()
 
-    formulario_creado = False
+        formulario_creado = False
 
-    ventana_reporte.destroy()
+        ventana_reporte.destroy()
+
+    tk.Button(
+        ventana_reporte,
+        text="Volver al menú",
+        command=volver_menu,
+        bg="blue",
+        fg="white"
+    ).pack(pady=10)
+
 def buscar_reporte():
 
     codigo = codigo_busqueda.get()
@@ -261,20 +270,13 @@ def buscar_reporte():
             bg="lightblue"
         ).pack()
 
-# TÍTULO
 
 tk.Label(
     ventana,
-    text="PREVENCIÓN DEL BULLYING\n Soy un asistente que te dara recomendaciones en caso de acoso o bullying:)",
+    text="PREVENCIÓN DEL BULLYING",
     font=("Arial", 16, "bold"),
     bg="lightblue"
 ).pack(pady=10)
-
-tk.Label(
-    ventana,
-    text="Tipos de bullying",
-    bg="lightblue"
-).pack()
 
 tk.Label(ventana, text="1. Físico", bg="lightblue").pack()
 tk.Label(ventana, text="2. Verbal", bg="lightblue").pack()
@@ -316,13 +318,15 @@ tk.Button(
     command=reportar,
     bg="orange"
 ).pack(pady=5)
- tk.Button(
-        ventana_formulario,
-        text="Guardar reporte",
-        command=guardar,
-        bg="blue",
-        fg="white"
-    ).pack(pady=5)
+
+tk.Button(
+    ventana,
+    text="Guardar reporte",
+    command=guardar,
+    bg="blue",
+    fg="white"
+).pack(pady=5)
+
 tk.Label(
     ventana,
     text="Buscar reporte por código:",
