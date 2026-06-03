@@ -1,6 +1,4 @@
-[8:44 a.m., 3/6/2026] Almudena Leonor Fragoso: 
-        …
-[8:53 a.m., 3/6/2026] Almudena Leonor Fragoso: import tkinter as tk
+ import tkinter as tk
 import csv
 import os
 
