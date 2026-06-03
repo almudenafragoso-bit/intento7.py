@@ -7,7 +7,6 @@ ventana.configure(bg="lightblue")
 
 reportes = {}
 contador = 1
-formulario_creado = False
 def salir():
     ventana.destroy()
 
