@@ -18,14 +18,74 @@ if not os.path.exists(archivo):
             ["codigo", "nombre", "tipo", "lugar", "descripcion"]
         )
 
-contador = 1
+def obtener_siguiente_codigo():
+
+    if not os.path.exists(archivo):
+        return 1
+
+    with open(archivo, "r", encoding="utf-8") as f:
+
+        lector = csv.reader(f)
+        filas = list(lector)
+
+        if len(filas) <= 1:
+            return 1
+
+        ultimo_codigo = filas[-1][0]
+
+        return int(ultimo_codigo.replace("R", "")) + 1
+
+
+contador = obtener_siguiente_codigo()
 formulario_creado = False
 
 # ---------------- FUNCIONES ----------------
 
 def salir():
     ventana.destroy()
+def recomendaciones_agresor():
 
+    v = tk.Toplevel()
+    v.title("Reflexión")
+    v.geometry("450x250")
+    v.configure(bg="#FFE4E1")
+
+    tk.Label(
+        v,
+        text="Recomendaciones para quien comete bullying",
+        font=("Arial", 12, "bold"),
+        bg="#FFE4E1"
+    ).pack(pady=10)
+
+    tk.Label(
+        v,
+        text="1. Reflexiona sobre cómo tus acciones afectan a otras personas.",
+        bg="#FFE4E1",
+        wraplength=400
+    ).pack(pady=5)
+
+    tk.Label(
+        v,
+        text="2. Ofrece una disculpa sincera y busca mejorar tu comportamiento.",
+        bg="#FFE4E1",
+        wraplength=400
+    ).pack(pady=5)
+
+    tk.Button(
+        v,
+        text="Cerrar",
+        command=v.destroy,
+        bg="#FF69B4",
+        fg="white"
+    ).pack(pady=10)
+    text="Mostrar recomendaciones"
+    tk.Button(
+    ventana,
+    text="Soy quien comete bullying",
+    command=recomendaciones_agresor,
+    bg="#DB7093",
+    fg="white"
+).pack(pady=5)
 def obtener_tipo():
     tipos = {
         "1": "Físico",
@@ -325,8 +385,8 @@ def buscar_reporte():
 
 tk.Label(
     ventana,
-    text="PREVENCIÓN DEL BULLYING",
-    font=("Arial", 18, "bold"),
+    text="🩷 SISTEMA DE PREVENCIÓN DEL BULLYING 🩷"
+    font=("Comic Sans MS", 18, "bold")
     bg="#FFC0CB"
 ).pack(pady=10)
 
