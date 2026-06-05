@@ -1,29 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
+import json
+import os
 
 app = Flask(_name_)
 
-reportes = []
+ARCHIVO = "reportes.json"
+
+if not os.path.exists(ARCHIVO):
+    with open(ARCHIVO, "w") as f:
+        json.dump([], f)
+
 
 @app.route("/")
 def inicio():
     return render_template("index.html")
 
+
 @app.route("/guardar", methods=["POST"])
 def guardar():
-
     nombre = request.form["nombre"]
     tipo = request.form["tipo"]
     lugar = request.form["lugar"]
     descripcion = request.form["descripcion"]
 
-    if nombre == "" or lugar == "" or descripcion == "":
-        return render_template(
-            "mensaje.html",
-            titulo="Error",
-            mensaje="Completa todos los campos."
-        )
+    with open(ARCHIVO, "r") as f:
+        reportes = json.load(f)
 
-    codigo = "R" + str(len(reportes) + 1)
+    codigo = f"R{len(reportes)+1}"
 
     reporte = {
         "codigo": codigo,
@@ -35,191 +38,73 @@ def guardar():
 
     reportes.append(reporte)
 
-    return render_template(
-        "mensaje.html",
-        titulo="Reporte Guardado",
-        mensaje="Tu código es: " + codigo
-    )
+    with open(ARCHIVO, "w") as f:
+        json.dump(reportes, f, indent=4)
+
+    return render_template("guardar.html", reporte=reporte)
+
 
 @app.route("/buscar", methods=["POST"])
 def buscar():
-
     codigo = request.form["codigo"]
 
-    for reporte in reportes:
-        if reporte["codigo"] == codigo:
-            return render_template(
-                "reporte.html",
-                reporte=reporte
-            )
+    with open(ARCHIVO, "r") as f:
+        reportes = json.load(f)
 
-    return render_template(
-        "mensaje.html",
-        titulo="No encontrado",
-        mensaje="No existe un reporte con ese código."
-    )
+    encontrado = None
+
+    for r in reportes:
+        if r["codigo"] == codigo:
+            encontrado = r
+            break
+
+    return render_template("buscar.html", reporte=encontrado)
+
 
 @app.route("/historial")
 def historial():
-    return render_template(
-        "historial.html",
-        reportes=reportes
-    )
+    with open(ARCHIVO, "r") as f:
+        reportes = json.load(f)
 
-@app.route("/victima")
-def victima():
-    return render_template("victima.html")
+    return render_template("historial.html", reportes=reportes)
 
-@app.route("/agresor")
-def agresor():
-    return render_template("agresor.html")
-
-@app.route("/educacion")
-def educacion():
-    return render_template("educacion.html")
-
-@app.route("/recursos")
-def recursos():
-    return render_template("recursos.html")
-
-@app.route("/tutorial")
-def tutorial():
-    return render_template("tutorial.html")
 
 if _name_ == "_main_":
-    app.run(debug=True)
-<!DOCTYPE html>
+    app.run(debug=True)<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Sistema de Prevención del Bullying</title>
-
-<style>
-
-body{
-font-family:Arial;
-background:#f4f4f4;
-margin:0;
-padding:0;
-}
-
-.container{
-width:80%;
-margin:auto;
-background:white;
-padding:20px;
-margin-top:20px;
-border-radius:10px;
-}
-
-h1{
-text-align:center;
-color:#d32f2f;
-}
-
-h2{
-color:#333;
-}
-
-label{
-font-weight:bold;
-}
-
-input, select, textarea{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:15px;
-}
-
-button{
-background:#4caf50;
-color:white;
-border:none;
-padding:10px 20px;
-cursor:pointer;
-}
-
-button:hover{
-background:#388e3c;
-}
-
-.menu a{
-text-decoration:none;
-padding:10px;
-background:#667eea;
-color:white;
-border-radius:5px;
-margin-right:10px;
-}
-
-.menu{
-margin-bottom:20px;
-}
-
-</style>
-
+<title>Prevención del Bullying</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
 </head>
-
 <body>
 
 <div class="container">
 
 <h1>🛡️ Sistema de Prevención del Bullying</h1>
 
-<div class="menu">
-
-<a href="/victima">Víctima</a>
-
-<a href="/agresor">Agresor</a>
-
-<a href="/educacion">Educación</a>
-
-<a href="/recursos">Recursos</a>
-
-<a href="/tutorial">Tutorial</a>
-
-<a href="/historial">Historial</a>
-
-</div>
-
-<hr>
-
 <h2>Registrar Reporte</h2>
 
 <form action="/guardar" method="post">
 
-<label>Nombre completo</label>
+<label>Nombre</label>
+<input type="text" name="nombre" required>
 
-<input type="text" name="nombre">
-
-<label>Tipo de bullying</label>
-
+<label>Tipo</label>
 <select name="tipo">
-
 <option>Físico</option>
-
 <option>Verbal</option>
-
 <option>Psicológico</option>
-
 <option>Social</option>
-
 <option>Ciberbullying</option>
-
 <option>Sexual</option>
-
-<option>Otros</option>
-
 </select>
 
-<label>Lugar del incidente</label>
-
-<input type="text" name="lugar">
+<label>Lugar</label>
+<input type="text" name="lugar" required>
 
 <label>Descripción</label>
-
-<textarea name="descripcion" rows="5"></textarea>
+<textarea name="descripcion" required></textarea>
 
 <button type="submit">
 Guardar Reporte
@@ -233,9 +118,7 @@ Guardar Reporte
 
 <form action="/buscar" method="post">
 
-<label>Código</label>
-
-<input type="text" name="codigo">
+<input type="text" name="codigo" placeholder="Ej. R1">
 
 <button type="submit">
 Buscar
@@ -243,108 +126,45 @@ Buscar
 
 </form>
 
+<br>
+
+<a href="/historial">
+<button>Ver Historial</button>
+</a>
+
 </div>
 
 </body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>{{ titulo }}</title>
-</head>
+</html>body{
+font-family:Arial;
+background:linear-gradient(135deg,#667eea,#764ba2);
+}
 
-<body>
+.container{
+width:80%;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:20px;
+margin-top:30px;
+}
 
-<h1>{{ titulo }}</h1>
+h1{
+color:#d32f2f;
+text-align:center;
+}
 
-<p>{{ mensaje }}</p>
+input,select,textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+}
 
-<a href="/">Volver al inicio</a>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Reporte</title>
-</head>
-
-<body>
-
-<h1>Reporte Encontrado</h1>
-
-<p><strong>Código:</strong> {{ reporte.codigo }}</p>
-
-<p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
-
-<p><strong>Tipo:</strong> {{ reporte.tipo }}</p>
-
-<p><strong>Lugar:</strong> {{ reporte.lugar }}</p>
-
-<p><strong>Descripción:</strong> {{ reporte.descripcion }}</p>
-
-<a href="/">Volver</a>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Historial</title>
-</head>
-
-<body>
-
-<h1>Historial de Reportes</h1>
-
-{% for reporte in reportes %}
-
-<hr>
-
-<p><strong>Código:</strong> {{ reporte.codigo }}</p>
-
-<p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
-
-<p><strong>Tipo:</strong> {{ reporte.tipo }}</p>
-
-<p><strong>Lugar:</strong> {{ reporte.lugar }}</p>
-
-{% endfor %}
-
-<a href="/">Volver</a>
-
-</body>
-</html>
-<h1>Recomendaciones para Víctimas</h1>
-<ul>
-<li>Habla con un adulto de confianza.</li>
-<li>Guarda evidencias.</li>
-<li>Reporta la situación.</li>
-<li>Busca apoyo emocional.</li>
-</ul>
-<a href="/">Volver</a
-<h1>Reflexión para Agresores</h1>
-<p>Ponte en el lugar de la otra persona.</p>
-<p>Ofrece disculpas sinceras.</p>
-<p>Busca mejorar tu comportamiento.</p>
-<a href="/">Volver</a>
-<h1>¿Qué es el Bullying?</h1>
-<p>Es una forma de acoso repetido que afecta a una persona.</p>
-<p>Puede ser físico, verbal, psicológico, social o digital.</p>
-<a href="/">Volver</a>
-<h1>Recursos de Ayuda</h1>
-<p>911 Emergencias</p>
-<p>089 Denuncia Anónima</p>
-<p>Orientador escolar</p>
-<a href="/">Volver</a>
-<h1>Tutorial</h1>
-<ol>
-<li>Registra un reporte.</li>
-<li>Guarda el código.</li>
-<li>Busca el reporte cuando lo necesites.</li>
-<li>Consulta los recursos de ayuda.</li>
-</ol>
-<a href="/">Volver</a>
+button{
+background:#d32f2f;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+cursor:pointer;
+}
