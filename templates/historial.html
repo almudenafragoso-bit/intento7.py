@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Historial</title>
+</head>
+
+<body>
+
+<h1>Historial de Reportes</h1>
+
+{% for reporte in reportes %}
+
+<hr>
+
+<p><strong>Código:</strong> {{ reporte.codigo }}</p>
+
+<p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
+
+<p><strong>Tipo:</strong> {{ reporte.tipo }}</p>
+
+<p><strong>Lugar:</strong> {{ reporte.lugar }}</p>
+
+{% endfor %}
+
+<a href="/">Volver</a>
+
+</body>
+</html>
