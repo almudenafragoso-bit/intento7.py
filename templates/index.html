@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Prevención del Bullying</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+padding:0;
+}
+
+.container{
+width:80%;
+margin:auto;
+background:white;
+padding:20px;
+margin-top:20px;
+border-radius:10px;
+}
+
+h1{
+text-align:center;
+color:#d32f2f;
+}
+
+h2{
+color:#333;
+}
+
+label{
+font-weight:bold;
+}
+
+input, select, textarea{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+}
+
+button{
+background:#4caf50;
+color:white;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+}
+
+button:hover{
+background:#388e3c;
+}
+
+.menu a{
+text-decoration:none;
+padding:10px;
+background:#667eea;
+color:white;
+border-radius:5px;
+margin-right:10px;
+}
+
+.menu{
+margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🛡️ Sistema de Prevención del Bullying</h1>
+
+<div class="menu">
+
+<a href="/victima">Víctima</a>
+
+<a href="/agresor">Agresor</a>
+
+<a href="/educacion">Educación</a>
+
+<a href="/recursos">Recursos</a>
+
+<a href="/tutorial">Tutorial</a>
+
+<a href="/historial">Historial</a>
+
+</div>
+
+<hr>
+
+<h2>Registrar Reporte</h2>
+
+<form action="/guardar" method="post">
+
+<label>Nombre completo</label>
+
+<input type="text" name="nombre">
+
+<label>Tipo de bullying</label>
+
+<select name="tipo">
+
+<option>Físico</option>
+
+<option>Verbal</option>
+
+<option>Psicológico</option>
+
+<option>Social</option>
+
+<option>Ciberbullying</option>
+
+<option>Sexual</option>
+
+<option>Otros</option>
+
+</select>
+
+<label>Lugar del incidente</label>
+
+<input type="text" name="lugar">
+
+<label>Descripción</label>
+
+<textarea name="descripcion" rows="5"></textarea>
+
+<button type="submit">
+Guardar Reporte
+</button>
+
+</form>
+
+<hr>
+
+<h2>Buscar Reporte</h2>
+
+<form action="/buscar" method="post">
+
+<label>Código</label>
+
+<input type="text" name="codigo">
+
+<button type="submit">
+Buscar
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
