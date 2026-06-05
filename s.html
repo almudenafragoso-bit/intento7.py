@@ -1,0 +1,350 @@
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(_name_)
+
+reportes = []
+
+@app.route("/")
+def inicio():
+    return render_template("index.html")
+
+@app.route("/guardar", methods=["POST"])
+def guardar():
+
+    nombre = request.form["nombre"]
+    tipo = request.form["tipo"]
+    lugar = request.form["lugar"]
+    descripcion = request.form["descripcion"]
+
+    if nombre == "" or lugar == "" or descripcion == "":
+        return render_template(
+            "mensaje.html",
+            titulo="Error",
+            mensaje="Completa todos los campos."
+        )
+
+    codigo = "R" + str(len(reportes) + 1)
+
+    reporte = {
+        "codigo": codigo,
+        "nombre": nombre,
+        "tipo": tipo,
+        "lugar": lugar,
+        "descripcion": descripcion
+    }
+
+    reportes.append(reporte)
+
+    return render_template(
+        "mensaje.html",
+        titulo="Reporte Guardado",
+        mensaje="Tu código es: " + codigo
+    )
+
+@app.route("/buscar", methods=["POST"])
+def buscar():
+
+    codigo = request.form["codigo"]
+
+    for reporte in reportes:
+        if reporte["codigo"] == codigo:
+            return render_template(
+                "reporte.html",
+                reporte=reporte
+            )
+
+    return render_template(
+        "mensaje.html",
+        titulo="No encontrado",
+        mensaje="No existe un reporte con ese código."
+    )
+
+@app.route("/historial")
+def historial():
+    return render_template(
+        "historial.html",
+        reportes=reportes
+    )
+
+@app.route("/victima")
+def victima():
+    return render_template("victima.html")
+
+@app.route("/agresor")
+def agresor():
+    return render_template("agresor.html")
+
+@app.route("/educacion")
+def educacion():
+    return render_template("educacion.html")
+
+@app.route("/recursos")
+def recursos():
+    return render_template("recursos.html")
+
+@app.route("/tutorial")
+def tutorial():
+    return render_template("tutorial.html")
+
+if _name_ == "_main_":
+    app.run(debug=True)
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Prevención del Bullying</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+padding:0;
+}
+
+.container{
+width:80%;
+margin:auto;
+background:white;
+padding:20px;
+margin-top:20px;
+border-radius:10px;
+}
+
+h1{
+text-align:center;
+color:#d32f2f;
+}
+
+h2{
+color:#333;
+}
+
+label{
+font-weight:bold;
+}
+
+input, select, textarea{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+}
+
+button{
+background:#4caf50;
+color:white;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+}
+
+button:hover{
+background:#388e3c;
+}
+
+.menu a{
+text-decoration:none;
+padding:10px;
+background:#667eea;
+color:white;
+border-radius:5px;
+margin-right:10px;
+}
+
+.menu{
+margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🛡️ Sistema de Prevención del Bullying</h1>
+
+<div class="menu">
+
+<a href="/victima">Víctima</a>
+
+<a href="/agresor">Agresor</a>
+
+<a href="/educacion">Educación</a>
+
+<a href="/recursos">Recursos</a>
+
+<a href="/tutorial">Tutorial</a>
+
+<a href="/historial">Historial</a>
+
+</div>
+
+<hr>
+
+<h2>Registrar Reporte</h2>
+
+<form action="/guardar" method="post">
+
+<label>Nombre completo</label>
+
+<input type="text" name="nombre">
+
+<label>Tipo de bullying</label>
+
+<select name="tipo">
+
+<option>Físico</option>
+
+<option>Verbal</option>
+
+<option>Psicológico</option>
+
+<option>Social</option>
+
+<option>Ciberbullying</option>
+
+<option>Sexual</option>
+
+<option>Otros</option>
+
+</select>
+
+<label>Lugar del incidente</label>
+
+<input type="text" name="lugar">
+
+<label>Descripción</label>
+
+<textarea name="descripcion" rows="5"></textarea>
+
+<button type="submit">
+Guardar Reporte
+</button>
+
+</form>
+
+<hr>
+
+<h2>Buscar Reporte</h2>
+
+<form action="/buscar" method="post">
+
+<label>Código</label>
+
+<input type="text" name="codigo">
+
+<button type="submit">
+Buscar
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>{{ titulo }}</title>
+</head>
+
+<body>
+
+<h1>{{ titulo }}</h1>
+
+<p>{{ mensaje }}</p>
+
+<a href="/">Volver al inicio</a>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte</title>
+</head>
+
+<body>
+
+<h1>Reporte Encontrado</h1>
+
+<p><strong>Código:</strong> {{ reporte.codigo }}</p>
+
+<p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
+
+<p><strong>Tipo:</strong> {{ reporte.tipo }}</p>
+
+<p><strong>Lugar:</strong> {{ reporte.lugar }}</p>
+
+<p><strong>Descripción:</strong> {{ reporte.descripcion }}</p>
+
+<a href="/">Volver</a>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Historial</title>
+</head>
+
+<body>
+
+<h1>Historial de Reportes</h1>
+
+{% for reporte in reportes %}
+
+<hr>
+
+<p><strong>Código:</strong> {{ reporte.codigo }}</p>
+
+<p><strong>Nombre:</strong> {{ reporte.nombre }}</p>
+
+<p><strong>Tipo:</strong> {{ reporte.tipo }}</p>
+
+<p><strong>Lugar:</strong> {{ reporte.lugar }}</p>
+
+{% endfor %}
+
+<a href="/">Volver</a>
+
+</body>
+</html>
+<h1>Recomendaciones para Víctimas</h1>
+<ul>
+<li>Habla con un adulto de confianza.</li>
+<li>Guarda evidencias.</li>
+<li>Reporta la situación.</li>
+<li>Busca apoyo emocional.</li>
+</ul>
+<a href="/">Volver</a
+<h1>Reflexión para Agresores</h1>
+<p>Ponte en el lugar de la otra persona.</p>
+<p>Ofrece disculpas sinceras.</p>
+<p>Busca mejorar tu comportamiento.</p>
+<a href="/">Volver</a>
+<h1>¿Qué es el Bullying?</h1>
+<p>Es una forma de acoso repetido que afecta a una persona.</p>
+<p>Puede ser físico, verbal, psicológico, social o digital.</p>
+<a href="/">Volver</a>
+<h1>Recursos de Ayuda</h1>
+<p>911 Emergencias</p>
+<p>089 Denuncia Anónima</p>
+<p>Orientador escolar</p>
+<a href="/">Volver</a>
+<h1>Tutorial</h1>
+<ol>
+<li>Registra un reporte.</li>
+<li>Guarda el código.</li>
+<li>Busca el reporte cuando lo necesites.</li>
+<li>Consulta los recursos de ayuda.</li>
+</ol>
+<a href="/">Volver</a>
