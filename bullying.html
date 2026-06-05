@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Prevención del Bullying</title>
+<style>
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#ffd1e8,#ffe8f3);
+margin:0;padding:20px;
+}
+.container{
+max-width:900px;margin:auto;background:white;
+border-radius:20px;padding:25px;
+box-shadow:0 0 20px rgba(0,0,0,.15);
+}
+h1{text-align:center;color:#c2185b}
+button{
+background:#e91e63;color:white;border:none;
+padding:10px 15px;border-radius:10px;
+cursor:pointer;margin:5px;
+}
+button:hover{opacity:.9}
+input,select,textarea{
+width:100%;padding:10px;margin:5px 0 10px 0;
+border-radius:8px;border:1px solid #ccc;
+}
+.modal{
+display:none;position:fixed;left:0;top:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.5);
+}
+.modal-content{
+background:white;width:80%;max-width:500px;
+margin:10% auto;padding:20px;border-radius:15px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🩷 Sistema de Prevención del Bullying 🩷</h1>
+
+<h3>Tipo de bullying</h3>
+<select id="tipo">
+<option>Físico</option>
+<option>Verbal</option>
+<option>Psicológico</option>
+<option>Social</option>
+<option>Ciberbullying</option>
+<option>Sexual</option>
+<option>Otros</option>
+</select>
+
+<button onclick="mostrarRecomendaciones()">Recomendaciones para víctima</button>
+<button onclick="mostrarAgresor()">Soy quien comete bullying</button>
+
+<hr>
+
+<h3>Registrar reporte</h3>
+<input id="nombre" placeholder="Nombre completo">
+<input id="lugar" placeholder="Lugar del incidente">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
+<button onclick="guardarReporte()">Guardar reporte</button>
+
+<hr>
+
+<h3>Buscar reporte</h3>
+<input id="buscarCodigo" placeholder="Ej. R1">
+<button onclick="buscarReporte()">Buscar</button>
+
+<div id="resultado"></div>
+
+<hr>
+<button onclick="volverMenu()">Volver al menú</button>
+<button onclick="salir()">Salir</button>
+</div>
+
+<div id="modal" class="modal">
+<div class="modal-content">
+<h2 id="tituloModal"></h2>
+<p id="contenidoModal"></p>
+<button onclick="cerrarModal()">Cerrar</button>
+</div>
+</div>
+
+<script>
+function obtenerContador(){
+let c=localStorage.getItem("contador");
+if(!c){localStorage.setItem("contador","1");return 1;}
+return parseInt(c);
+}
+
+function mostrarModal(t,c){
+document.getElementById("tituloModal").innerText=t;
+document.getElementById("contenidoModal").innerHTML=c;
+document.getElementById("modal").style.display="block";
+}
+
+function cerrarModal(){
+document.getElementById("modal").style.display="none";
+}
+
+function mostrarRecomendaciones(){
+const tipo=document.getElementById("tipo").value;
+const datos={
+"Físico":["Reporta las agresiones.","Guarda evidencias."],
+"Verbal":["No respondas insultando.","Habla con alguien de confianza."],
+"Psicológico":["Busca apoyo emocional.","Acude a orientación."],
+"Social":["Acércate a personas de confianza.","Participa en actividades grupales."],
+"Ciberbullying":["Bloquea a los agresores.","Guarda capturas."],
+"Sexual":["Denuncia inmediatamente.","Busca ayuda de un adulto."],
+"Otros":["Habla con alguien de confianza.","Busca apoyo escolar."]
+};
+mostrarModal(tipo,datos[tipo][0]+"<br><br>"+datos[tipo][1]);
+}
+
+function mostrarAgresor(){
+mostrarModal(
+"Reflexión",
+"1. Reflexiona sobre cómo tus acciones afectan a otras personas.<br><br>2. Ofrece una disculpa sincera y busca mejorar tu comportamiento."
+);
+}
+
+function guardarReporte(){
+let contador=obtenerContador();
+let codigo="R"+contador;
+
+let reporte={
+codigo:codigo,
+nombre:document.getElementById("nombre").value,
+tipo:document.getElementById("tipo").value,
+lugar:document.getElementById("lugar").value,
+descripcion:document.getElementById("descripcion").value
+};
+
+localStorage.setItem(codigo,JSON.stringify(reporte));
+localStorage.setItem("contador",contador+1);
+
+mostrarModal(
+"Reporte Guardado",
+"Código: "+codigo+"<br>Nombre: "+reporte.nombre+"<br>Tipo: "+reporte.tipo
+);
+}
+
+function buscarReporte(){
+let codigo=document.getElementById("buscarCodigo").value;
+let dato=localStorage.getItem(codigo);
+
+if(dato){
+let r=JSON.parse(dato);
+document.getElementById("resultado").innerHTML=
+"<b>"+r.codigo+"</b><br>"+
+r.nombre+"<br>"+
+r.tipo+"<br>"+
+r.lugar+"<br>"+
+r.descripcion;
+}else{
+document.getElementById("resultado").innerHTML="Reporte no encontrado";
+}
+}
+
+function volverMenu(){
+document.getElementById("nombre").value="";
+document.getElementById("lugar").value="";
+document.getElementById("descripcion").value="";
+document.getElementById("buscarCodigo").value="";
+document.getElementById("resultado").innerHTML="";
+}
+
+function salir(){
+window.close();
+alert("Puedes cerrar la pestaña del navegador.");
+}
+</script>
+</body>
+</html>
