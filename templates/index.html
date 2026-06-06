@@ -1,159 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Sistema de Prevención del Bullying</title>
-
-<style>
-
-body{
-font-family:Arial;
-background:#f4f4f4;
-margin:0;
-padding:0;
-}
-
-.container{
-width:80%;
-margin:auto;
-background:white;
-padding:20px;
-margin-top:20px;
-border-radius:10px;
-}
-
-h1{
-text-align:center;
-color:#d32f2f;
-}
-
-h2{
-color:#333;
-}
-
-label{
-font-weight:bold;
-}
-
-input, select, textarea{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:15px;
-}
-
-button{
-background:#4caf50;
-color:white;
-border:none;
-padding:10px 20px;
-cursor:pointer;
-}
-
-button:hover{
-background:#388e3c;
-}
-
-.menu a{
-text-decoration:none;
-padding:10px;
-background:#667eea;
-color:white;
-border-radius:5px;
-margin-right:10px;
-}
-
-.menu{
-margin-bottom:20px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Prevención del Bullying</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" style="background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);">
+            <h1>🛡️ Sistema de Prevención del Bullying 🛡️</h1>
+            <p class="subtitle">Un espacio seguro para víctimas y agresores</p>
+        </header>
 
-<div class="container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sección: Para Víctimas -->
+            <section class="section">
+                <h2 class="section-title" style="color: #ec4899;">👥 PARA VÍCTIMAS</h2>
+                <div class="button-group">
+                    <a href="/recomendaciones" class="btn" style="background-color: #ec4899;">
+                        📋 Recomendaciones de Autoprotección
+                    </a>
+                    <a href="/registro" class="btn" style="background-color: #ec4899;">
+                        📝 Registrar tu Reporte
+                    </a>
+                    <a href="/buscar" class="btn" style="background-color: #ec4899;">
+                        🔍 Ver tu Reporte
+                    </a>
+                </div>
+            </section>
 
-<h1>🛡️ Sistema de Prevención del Bullying</h1>
+            <!-- Separador -->
+            <hr class="separator">
 
-<div class="menu">
+            <!-- Sección: Para Agresores -->
+            <section class="section">
+                <h2 class="section-title" style="color: #f59e0b;">💭 PARA AGRESORES</h2>
+                <div class="button-group">
+                    <a href="/agresor" class="btn" style="background-color: #f59e0b;">
+                        🤝 Espacio de Reflexión y Cambio
+                    </a>
+                </div>
+            </section>
 
-<a href="/victima">Víctima</a>
+            <!-- Separador -->
+            <hr class="separator">
 
-<a href="/agresor">Agresor</a>
+            <!-- Sección: Información General -->
+            <section class="section">
+                <h2 class="section-title" style="color: #10b981;">📊 INFORMACIÓN GENERAL</h2>
+                <div class="button-group">
+                    <a href="/reportes" class="btn" style="background-color: #10b981;">
+                        📊 Ver Todos los Reportes
+                    </a>
+                </div>
+            </section>
+        </main>
 
-<a href="/educacion">Educación</a>
-
-<a href="/recursos">Recursos</a>
-
-<a href="/tutorial">Tutorial</a>
-
-<a href="/historial">Historial</a>
-
-</div>
-
-<hr>
-
-<h2>Registrar Reporte</h2>
-
-<form action="/guardar" method="post">
-
-<label>Nombre completo</label>
-
-<input type="text" name="nombre">
-
-<label>Tipo de bullying</label>
-
-<select name="tipo">
-
-<option>Físico</option>
-
-<option>Verbal</option>
-
-<option>Psicológico</option>
-
-<option>Social</option>
-
-<option>Ciberbullying</option>
-
-<option>Sexual</option>
-
-<option>Otros</option>
-
-</select>
-
-<label>Lugar del incidente</label>
-
-<input type="text" name="lugar">
-
-<label>Descripción</label>
-
-<textarea name="descripcion" rows="5"></textarea>
-
-<button type="submit">
-Guardar Reporte
-</button>
-
-</form>
-
-<hr>
-
-<h2>Buscar Reporte</h2>
-
-<form action="/buscar" method="post">
-
-<label>Código</label>
-
-<input type="text" name="codigo">
-
-<button type="submit">
-Buscar
-</button>
-
-</form>
-
-</div>
-
+        <!-- Footer -->
+        <footer class="footer">
+            <button onclick="window.close()" class="btn-exit">❌ Salir de la Aplicación</button>
+        </footer>
+    </div>
 </body>
 </html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Reporte</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" style="background-color: #8b5cf6;">
+            <h1>🔍 Buscar tu Reporte</h1>
+            <p class="subtitle">Ingresa el código de tu reporte para recuperarlo</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="form-group">
+                <label for="codigo-reporte">Código del reporte (ej. R0001):</label>
+                <input type="text" id="codigo-reporte" class="form-control" placeholder="R0001" onkeypress="if(event.key==='Enter') buscarReporte()">
+            </div>
+
+            <div class="button-group">
+                <button onclick="buscarReporte()" class="btn" style="background-color: #8b5cf6;">
+                    🔍 Buscar Reporte
+                </button>
+            </div>
+
+            <div id="resultado" class="result-box"></div>
+
+            <div class="button-group">
+                <a href="/" class="btn" style="background-color: #6366f1;">
+                    ← Volver al Inicio
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function buscarReporte() {
+            const codigo = document.getElementById('codigo-reporte').value.trim().toUpperCase();
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (!codigo) {
+                resultadoDiv.innerHTML = '<p style="color: #ef4444;">Por favor ingresa un código</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/reportes/${codigo}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    let html = `
+                    <div class="reporte-card">
+                        <h3>📋 REPORTE ENCONTRADO</h3>
+                        <p><strong>Código:</strong> ${data.codigo}</p>
+                        <p><strong>Nombre:</strong> ${data.nombre}</p>
+                        <p><strong>Tipo:</strong> ${data.tipo}</p>
+                        <p><strong>Lugar:</strong> ${data.lugar}</p>
+                        <p><strong>Fecha:</strong> ${data.fecha}</p>
+                        <hr>
+                        <h4>Descripción:</h4>
+                        <p>${data.descripcion.replace(/\n/g, '<br>')}</p>
+                        <hr>
+                        <p><strong>Estado:</strong> ✅ Registrado</p>
+                        <p><strong>Acceso:</strong> Confidencial</p>
+                    </div>
+                    `;
+                    resultadoDiv.innerHTML = html;
+                } else {
+                    resultadoDiv.innerHTML = '<p style="color: #ef4444;">❌ Reporte no encontrado. Verifica que el código sea correcto (ej. R0001)</p>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultadoDiv.innerHTML = '<p style="color: #ef4444;">Error en la conexión</p>';
+            }
+        }
+    </script>
+</body>
+</html>

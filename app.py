@@ -1,90 +1,91 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, jsonify
+import json
+import os
+from datetime import datetime
 
 app = Flask(__name__)
+ARCHIVO_DATOS = "reportes.json"
 
-reportes = []
+def cargar_datos():
+    """Carga los reportes desde el archivo JSON"""
+    if os.path.exists(ARCHIVO_DATOS):
+        with open(ARCHIVO_DATOS, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
 
-@app.route("/")
-def inicio():
-    return render_template("index.html")
+def guardar_datos(reportes):
+    """Guarda los reportes en el archivo JSON"""
+    with open(ARCHIVO_DATOS, 'w', encoding='utf-8') as f:
+        json.dump(reportes, f, ensure_ascii=False, indent=2)
 
-@app.route("/guardar", methods=["POST"])
-def guardar():
+@app.route('/')
+def index():
+    """Página principal"""
+    return render_template('index.html')
 
-    nombre = request.form["nombre"]
-    tipo = request.form["tipo"]
-    lugar = request.form["lugar"]
-    descripcion = request.form["descripcion"]
+@app.route('/recomendaciones')
+def recomendaciones():
+    """Página de recomendaciones para víctimas"""
+    return render_template('recomendaciones.html')
 
-    if nombre == "" or lugar == "" or descripcion == "":
-        return render_template(
-            "mensaje.html",
-            titulo="Error",
-            mensaje="Completa todos los campos."
-        )
+@app.route('/registro')
+def registro():
+    """Página de registro de reportes"""
+    return render_template('registro.html')
 
-    codigo = "R" + str(len(reportes) + 1)
-
-    reporte = {
-        "codigo": codigo,
-        "nombre": nombre,
-        "tipo": tipo,
-        "lugar": lugar,
-        "descripcion": descripcion
-    }
-
-    reportes.append(reporte)
-
-    return render_template(
-        "mensaje.html",
-        titulo="Reporte Guardado",
-        mensaje="Tu código es: " + codigo
-    )
-
-@app.route("/buscar", methods=["POST"])
+@app.route('/buscar')
 def buscar():
+    """Página de búsqueda de reportes"""
+    return render_template('buscar.html')
 
-    codigo = request.form["codigo"]
-
-    for reporte in reportes:
-        if reporte["codigo"] == codigo:
-            return render_template(
-                "reporte.html",
-                reporte=reporte
-            )
-
-    return render_template(
-        "mensaje.html",
-        titulo="No encontrado",
-        mensaje="No existe un reporte con ese código."
-    )
-
-@app.route("/historial")
-def historial():
-    return render_template(
-        "historial.html",
-        reportes=reportes
-    )
-
-@app.route("/victima")
-def victima():
-    return render_template("victima.html")
-
-@app.route("/agresor")
+@app.route('/agresor')
 def agresor():
-    return render_template("agresor.html")
+    """Página de reflexión para agresores"""
+    return render_template('agresor.html')
 
-@app.route("/educacion")
-def educacion():
-    return render_template("educacion.html")
+@app.route('/reportes')
+def ver_reportes():
+    """Página con todos los reportes"""
+    return render_template('reportes.html')
 
-@app.route("/recursos")
-def recursos():
-    return render_template("recursos.html")
+@app.route('/api/reportes', methods=['GET'])
+def api_get_reportes():
+    """API para obtener todos los reportes"""
+    reportes = cargar_datos()
+    return jsonify(reportes)
 
-@app.route("/tutorial")
-def tutorial():
-    return render_template("tutorial.html")
+@app.route('/api/reportes/<codigo>', methods=['GET'])
+def api_get_reporte(codigo):
+    """API para obtener un reporte específico"""
+    reportes = cargar_datos()
+    if codigo.upper() in reportes:
+        return jsonify(reportes[codigo.upper()])
+    return jsonify({'error': 'Reporte no encontrado'}), 404
 
-if __name__ == "__main__":
+@app.route('/api/reportes', methods=['POST'])
+def api_crear_reporte():
+    """API para crear un nuevo reporte"""
+    data = request.get_json()
+    
+    # Validación
+    campos_requeridos = ['nombre', 'tipo', 'descripcion']
+    if not all(campo in data for campo in campos_requeridos):
+        return jsonify({'error': 'Faltan campos requeridos'}), 400
+    
+    reportes = cargar_datos()
+    codigo = f"R{len(reportes) + 1:04d}"
+    
+    reportes[codigo] = {
+        'codigo': codigo,
+        'nombre': data.get('nombre', ''),
+        'tipo': data.get('tipo', ''),
+        'lugar': data.get('lugar', ''),
+        'fecha': data.get('fecha', datetime.now().strftime("%d/%m/%Y")),
+        'descripcion': data.get('descripcion', '')
+    }
+    
+    guardar_datos(reportes)
+    return jsonify({'codigo': codigo, 'mensaje': 'Reporte registrado exitosamente'}), 201
+
+if __name__ == '__main__':
     app.run(debug=True)

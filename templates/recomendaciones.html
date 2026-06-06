@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendaciones para Víctimas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" style="background-color: #ec4899;">
+            <h1>📋 Recomendaciones de Autoprotección</h1>
+            <p class="subtitle">Selecciona el tipo de bullying para obtener consejos específicos</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="form-group">
+                <label for="tipo-bullying">Tipo de bullying:</label>
+                <select id="tipo-bullying" onchange="actualizarRecomendaciones()" class="form-control">
+                    <option value="fisico">🥊 Físico</option>
+                    <option value="verbal">💬 Verbal</option>
+                    <option value="psicologico">🧠 Psicológico</option>
+                    <option value="social">🚫 Social</option>
+                    <option value="ciberbullying">📱 Ciberbullying</option>
+                    <option value="sexual">⚠️ Sexual</option>
+                </select>
+            </div>
+
+            <div id="recomendaciones" class="recommendations-box"></div>
+
+            <div class="button-group">
+                <a href="/" class="btn" style="background-color: #6366f1;">
+                    ← Volver al Inicio
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const recomendaciones = {
+            fisico: [
+                "✓ Reporta las agresiones a un adulto de confianza.",
+                "✓ Guarda evidencias (fotos, videos).",
+                "✓ Busca apoyo médico si es necesario.",
+                "✓ Acompáñate de otros estudiantes.",
+                "✓ No estés solo en espacios vulnerables."
+            ],
+            verbal: [
+                "✓ No respondas insultando.",
+                "✓ Habla con alguien de confianza.",
+                "✓ Documenta las palabras hirientes.",
+                "✓ Usa frases como 'Eso no me afecta'.",
+                "✓ Busca refugio en amigos solidarios."
+            ],
+            psicologico: [
+                "✓ Busca apoyo emocional inmediato.",
+                "✓ Acude a orientación escolar.",
+                "✓ Practica técnicas de relajación.",
+                "✓ Confía en alguien de confianza.",
+                "✓ Recuerda que no es tu culpa."
+            ],
+            social: [
+                "✓ Acércate a personas de confianza.",
+                "✓ Participa en actividades grupales.",
+                "✓ No aisles a otros que sufren lo mismo.",
+                "✓ Busca nuevos amigos con tus intereses.",
+                "✓ Participa en clubs o grupos escolares."
+            ],
+            ciberbullying: [
+                "✓ Bloquea a los agresores inmediatamente.",
+                "✓ Guarda capturas de pantalla.",
+                "✓ No contestes mensajes negativos.",
+                "✓ Reporta el contenido a la plataforma.",
+                "✓ Privacidad: revisa tus configuraciones."
+            ],
+            sexual: [
+                "✓ Denuncia inmediatamente.",
+                "✓ Busca ayuda de un adulto de confianza.",
+                "✓ Acude a las autoridades escolares.",
+                "✓ Busca apoyo psicológico profesional.",
+                "✓ Conoce tus derechos sobre tu cuerpo."
+            ]
+        };
+
+        function actualizarRecomendaciones() {
+            const tipo = document.getElementById('tipo-bullying').value;
+            const recomendacionesDiv = document.getElementById('recomendaciones');
+            const iconos = { fisico: '🥊', verbal: '💬', psicologico: '🧠', social: '🚫', ciberbullying: '📱', sexual: '⚠️' };
+            const nombres = { fisico: 'Físico', verbal: 'Verbal', psicologico: 'Psicológico', social: 'Social', ciberbullying: 'Ciberbullying', sexual: 'Sexual' };
+
+            let html = `<h3>${iconos[tipo]} ${nombres[tipo]}</h3>`;
+            html += '<ul class="recomendaciones-list">';
+            recomendaciones[tipo].forEach(rec => {
+                html += `<li>${rec}</li>`;
+            });
+            html += '</ul>';
+
+            recomendacionesDiv.innerHTML = html;
+        }
+
+        // Cargar recomendaciones al inicio
+        actualizarRecomendaciones();
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Reportes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header" style="background-color: #10b981;">
+            <h1>📊 Todos los Reportes Registrados</h1>
+            <p class="subtitle" id="total-reportes">Total de reportes: 0</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="reportes-container" class="reportes-container"></div>
+
+            <div class="button-group">
+                <a href="/" class="btn" style="background-color: #6366f1;">
+                    ← Volver al Inicio
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function cargarReportes() {
+            try {
+                const response = await fetch('/api/reportes');
+                const reportes = await response.json();
+
+                const contenedor = document.getElementById('reportes-container');
+                const totalReportes = document.getElementById('total-reportes');
+
+                if (Object.keys(reportes).length === 0) {
+                    contenedor.innerHTML = `
+                    <div class="reporte-empty">
+                        <h3>📋 SIN REPORTES REGISTRADOS</h3>
+                        <p>Sé el primero en registrar un reporte. Tu voz importa y puede ayudar a otros.</p>
+                    </div>
+                    `;
+                    totalReportes.textContent = 'Total de reportes: 0';
+                } else {
+                    totalReportes.textContent = `Total de reportes: ${Object.keys(reportes).length}`;
+
+                    let html = '';
+                    for (const [codigo, reporte] of Object.entries(reportes)) {
+                        const descripcionCorta = reporte.descripcion.substring(0, 80).replace(/\n/g, ' ') + (reporte.descripcion.length > 80 ? '...' : '');
+
+                        html += `
+                        <div class="reporte-card">
+                            <div class="reporte-header">
+                                <strong>Código:</strong> ${reporte.codigo}
+                            </div>
+                            <div class="reporte-body">
+                                <p><strong>Nombre:</strong> ${reporte.nombre}</p>
+                                <p><strong>Tipo:</strong> ${reporte.tipo}</p>
+                                <p><strong>Lugar:</strong> ${reporte.lugar}</p>
+                                <p><strong>Fecha:</strong> ${reporte.fecha}</p>
+                                <p><strong>Descripción:</strong> ${descripcionCorta}</p>
+                            </div>
+                        </div>
+                        `;
+                    }
+                    contenedor.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('reportes-container').innerHTML = '<p style="color: #ef4444;">Error al cargar los reportes</p>';
+            }
+        }
+
+        // Cargar reportes al iniciar
+        document.addEventListener('DOMContentLoaded', cargarReportes);
+    </script>
+</body>
+</html>
